@@ -1,0 +1,12 @@
+def extract_named_entities(text):
+    doc = nlp(text)
+    entities = {"ORG": 0, "GPE": 0, "PERSON": 0}  # Initialize entity count dictionary
+    for ent in doc.ents:
+        if ent.label_ in entities:
+            entities[ent.label_] += 1
+    return entities
+
+# Example usage
+text = "Apple Inc. is planning to expand its headquarters in Cupertino."
+entities = extract_named_entities(clean_text(text))
+print(entities)

@@ -1,0 +1,35 @@
+import pandas as pd
+from bs4 import BeautifulSoup
+import re
+import spacy
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+import nltk
+nltk.download('stopwords')
+nltk.download('punkt')
+df = pd.read_csv("dutch_news_articles.csv")
+print(df.head())
+def preprocess_text(text):
+    soup = BeautifulSoup(text, "html.parser")
+    text = soup.get_text()
+    text = re.sub(r'\s+', ' ', text)
+    text = re.sub(r'[^a-zA-Z\s]', '', text)
+    text = text.lower()
+    return text
+df['cleaned_text'] = df['article_text'].apply(preprocess_text)
+dutch_stopwords = set(stopwords.words('dutch'))
+
+def tokenize_and_remove_stopwords(text):
+    tokens = word_tokenize(text, language='dutch')
+    filtered_tokens = [word for word in tokens if word not in dutch_stopwords]
+    return filtered_tokens
+df['tokens'] = df['cleaned_text'].apply(tokenize_and_remove_stopwords)
+nlp = spacy.load("nl_core_news_sm")
+def lemmatize_tokens(tokens):
+    doc = nlp(' '.join(tokens))
+    lemmatized = [token.lemma_ for token in doc]
+    return lemmatized
+df['lemmatized_tokens'] = df['tokens'].apply(lemmatize_tokens)
+
+
+

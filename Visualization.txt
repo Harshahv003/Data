@@ -1,0 +1,7 @@
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Example scatter plot
+sns.scatterplot(x='sentiment', y='popularity', data=df)
+plt.title("Sentiment vs. Popularity")
+plt.show()
